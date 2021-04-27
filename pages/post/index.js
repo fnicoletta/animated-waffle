@@ -52,7 +52,7 @@ export const Post = ({ posts }) => {
 	);
 };
 
-export const getServerSideProps = async (context) => {
+export const getStaticProps = async (context) => {
 	const query = encodeURIComponent(`*[ _type == "post" ]`);
 	const url = `https://d7idjbeo.api.sanity.io/v1/data/query/production?query=${query}`;
 
@@ -71,14 +71,7 @@ export const getServerSideProps = async (context) => {
 		props: {
 			posts,
 		},
-	};
-
-	return {
-		props: {
-			title: post.title,
-			body: post.body,
-			image: post.mainImage,
-		},
+		revalidate: 60,
 	};
 };
 

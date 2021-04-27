@@ -28,8 +28,26 @@ export const Post = ({ title, body, image }) => {
 	);
 };
 
-export const getServerSideProps = async (context) => {
-	const { slug } = context.query;
+export const getStaticPaths = async () => {
+	const query = encodeURIComponent(`*[ _type == "post" ]`);
+	const url = `https://d7idjbeo.api.sanity.io/v1/data/query/production?query=${query}`;
+
+	const response = await fetch(url);
+	const json = await response.json();
+	const posts = json.result;
+
+	const paths = posts.map((post) => ({
+		params: { slug: post.slug.current },
+	}));
+
+	return {
+		paths,
+		fallback: false,
+	};
+};
+
+export const getStaticProps = async (context) => {
+	const { slug } = context.params;
 
 	if (!slug) {
 		return {
@@ -58,6 +76,7 @@ export const getServerSideProps = async (context) => {
 			body: post.body,
 			image: post.mainImage,
 		},
+		revalidate: 60,
 	};
 };
 
