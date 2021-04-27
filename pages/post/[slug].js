@@ -76,7 +76,7 @@ export const getStaticProps = async (context) => {
 			body: post.body,
 			image: post.mainImage,
 		},
-		revalidate: 60,
+		revalidate: 10,
 	};
 };
 
